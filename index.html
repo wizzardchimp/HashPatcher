@@ -144,49 +144,40 @@
 
     const labels = ['Very weak', 'Weak', 'Fair', 'Good', 'Strong'];
 
-    function updateStrength(val) {
-      if (!val) {
+    function formatTime(sec) {
+      if (!sec || sec < 1) return 'less than a second';
+      if (sec < 60) return Math.round(sec) + ' seconds';
+      if (sec < 3600) { const m = Math.round(sec / 60); return m + ' minute' + (m === 1 ? '' : 's'); }
+      if (sec < 86400) { const h = Math.round(sec / 3600); return h + ' hour' + (h === 1 ? '' : 's'); }
+      if (sec < 2592000) { const d = Math.round(sec / 86400); return d + ' day' + (d === 1 ? '' : 's'); }
+      if (sec < 31536000) { const mo = Math.round(sec / 2592000); return mo + ' month' + (mo === 1 ? '' : 's'); }
+      if (sec < 315360000) { const y = Math.round(sec / 31536000); return y + ' year' + (y === 1 ? '' : 's'); }
+      if (sec < 3153600000) { const de = Math.round(sec / 315360000); return de + ' decade' + (de === 1 ? '' : 's'); }
+      return 'centuries';
+    }
+
+    function updateStrength(pwd) {
+      if (!pwd) {
         strengthBar.style.width = '0%';
         strengthBar.className = 'h-2 w-0 bg-red-500 transition-all';
         strengthLabel.textContent = '—';
         crackTime.textContent = '—';
         return;
       }
-      const r = zxcvbn(val);
-      const s = r.score; // 0-4
-      const pct = ((s + 1) / 5) * 100;
-      const colors = ['bg-red-500','bg-orange-500','bg-yellow-500','bg-emerald-500','bg-green-600'];
-      strengthBar.style.width = pct + '%';
-      strengthBar.className = 'h-2 transition-all ' + colors[s];
-      strengthLabel.textContent = labels[s];
-      const ct = r.crack_times_display;
-      const val = ct.offline_fast_hashing_1e10_per_second;
-      const sec = r.crack_times_seconds.offline_fast_hashing_1e10_per_second;
-      let display;
-      if (!sec || sec < 1) {
-        display = val;
-      } else if (sec < 60) {
-        display = `${Math.round(sec)} seconds`;
-      } else if (sec < 3600) {
-        const m = Math.round(sec / 60);
-        display = `${m} minute${m === 1 ? '' : 's'}`;
-      } else if (sec < 86400) {
-        const h = Math.round(sec / 3600);
-        display = `${h} hour${h === 1 ? '' : 's'}`;
-      } else if (sec < 31536000) {
-        const d = Math.round(sec / 86400);
-        display = `${d} day${d === 1 ? '' : 's'}`;
-      } else if (sec < 315360000) {
-        const y = Math.round(sec / 31536000);
-        display = `${y} year${y === 1 ? '' : 's'}`;
-      } else if (sec < 3153600000) {
-        const de = Math.round(sec / 315360000);
-        display = `${de} decade${de === 1 ? '' : 's'}`;
-      } else {
-        const c = Math.round(sec / 3153600000);
-        display = `${c} century${c === 1 ? '' : 's'}`;
+      try {
+        const r = zxcvbn(pwd);
+        const s = r.score;
+        const pct = ((s + 1) / 5) * 100;
+        const colors = ['bg-red-500','bg-orange-500','bg-yellow-500','bg-emerald-500','bg-green-600'];
+        strengthBar.style.width = pct + '%';
+        strengthBar.className = 'h-2 transition-all ' + colors[s];
+        strengthLabel.textContent = labels[s];
+        const sec = r.crack_times_seconds.offline_fast_hashing_1e10_per_second;
+        crackTime.textContent = formatTime(sec);
+      } catch (e) {
+        strengthLabel.textContent = '—';
+        crackTime.textContent = 'zxcvbn not loaded';
       }
-      crackTime.textContent = display;
     }
 
     function updateHash() {
@@ -206,7 +197,6 @@
         copyBtn.textContent = 'Copied!';
         setTimeout(() => copyBtn.textContent = orig, 1200);
       } catch (e) {
-        // fallback
         const range = document.createRange();
         range.selectNode(output);
         window.getSelection().removeAllRanges();
@@ -216,9 +206,7 @@
       }
     });
 
-    // initial
     updateHash();
-    updateStrength('');
   </script>
 </body>
 </html>
