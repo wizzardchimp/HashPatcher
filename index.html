@@ -159,7 +159,34 @@
       strengthBar.style.width = pct + '%';
       strengthBar.className = 'h-2 transition-all ' + colors[s];
       strengthLabel.textContent = labels[s];
-      crackTime.textContent = r.crack_times_display.offline_fast_hashing_1e10_per_second;
+      const ct = r.crack_times_display;
+      const val = ct.offline_fast_hashing_1e10_per_second;
+      const sec = r.crack_times_seconds.offline_fast_hashing_1e10_per_second;
+      let display;
+      if (!sec || sec < 1) {
+        display = val;
+      } else if (sec < 60) {
+        display = `${Math.round(sec)} seconds`;
+      } else if (sec < 3600) {
+        const m = Math.round(sec / 60);
+        display = `${m} minute${m === 1 ? '' : 's'}`;
+      } else if (sec < 86400) {
+        const h = Math.round(sec / 3600);
+        display = `${h} hour${h === 1 ? '' : 's'}`;
+      } else if (sec < 31536000) {
+        const d = Math.round(sec / 86400);
+        display = `${d} day${d === 1 ? '' : 's'}`;
+      } else if (sec < 315360000) {
+        const y = Math.round(sec / 31536000);
+        display = `${y} year${y === 1 ? '' : 's'}`;
+      } else if (sec < 3153600000) {
+        const de = Math.round(sec / 315360000);
+        display = `${de} decade${de === 1 ? '' : 's'}`;
+      } else {
+        const c = Math.round(sec / 3153600000);
+        display = `${c} century${c === 1 ? '' : 's'}`;
+      }
+      crackTime.textContent = display;
     }
 
     function updateHash() {
