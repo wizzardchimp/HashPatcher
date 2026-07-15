@@ -20,7 +20,7 @@
                 class="w-full h-40 bg-black border border-zinc-800 rounded-xl p-4 text-lg focus:outline-none focus:border-zinc-600 resize-y"
                 placeholder="Type or paste text here..."></textarea>
 
-      <div class="mt-4">
+      <div id="meter" class="mt-4">
         <div class="flex justify-between items-baseline text-sm mb-1">
           <span class="text-zinc-400">Password strength</span>
           <span id="strengthLabel" class="font-medium text-zinc-300">—</span>
@@ -39,10 +39,16 @@
         <div id="output"
              class="font-mono text-xl bg-black border border-zinc-800 rounded-xl p-4 min-h-[52px] break-all select-all">
         </div>
-        <button id="copyBtn"
-                class="mt-3 w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 active:bg-green-700 text-white font-medium transition">
-          Copy
-        </button>
+        <div class="flex gap-2 mt-3">
+          <button id="copyBtn"
+                  class="flex-1 py-3 rounded-xl bg-green-600 hover:bg-green-500 active:bg-green-700 text-white font-medium transition">
+            Copy
+          </button>
+          <button id="meterBtn"
+                  class="flex-1 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-zinc-300 font-medium transition">
+            Meter
+          </button>
+        </div>
       </div>
     </div>
 
@@ -138,6 +144,8 @@
     const input = document.getElementById('input');
     const output = document.getElementById('output');
     const copyBtn = document.getElementById('copyBtn');
+    const meterBtn = document.getElementById('meterBtn');
+    const meter = document.getElementById('meter');
     const strengthBar = document.getElementById('strengthBar');
     const strengthLabel = document.getElementById('strengthLabel');
     const crackTime = document.getElementById('crackTime');
@@ -207,6 +215,10 @@
     });
 
     updateHash();
+
+    meterBtn.addEventListener('click', () => {
+      meter.classList.toggle('hidden');
+    });
   </script>
 </body>
 </html>
