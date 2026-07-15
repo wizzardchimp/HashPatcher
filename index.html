@@ -460,6 +460,24 @@
         panelStatus.className = 'text-xs text-red-500 font-mono';
       }
 
+      addLine('<span class="text-zinc-500">─────────────────────────────────────────</span>');
+      addLine('<span class="text-zinc-400">Need deeper lookup? CrackStation has 15B+ entries.</span>');
+
+      const linkDiv = document.createElement('div');
+      linkDiv.className = 'mt-2';
+      linkDiv.innerHTML = '<a id="crackStationLink" href="https://crackstation.net/" target="_blank" rel="noopener" class="inline-block px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 rounded text-zinc-300 hover:text-white text-xs transition cursor-pointer">Open CrackStation →</a>';
+      terminal.appendChild(linkDiv);
+
+      const csLink = document.getElementById('crackStationLink');
+      csLink.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+          await navigator.clipboard.writeText(hash);
+        } catch (err) {}
+        window.open('https://crackstation.net/', '_blank');
+      });
+
+      terminal.scrollTop = terminal.scrollHeight;
       crackRunning = false;
     }
 
