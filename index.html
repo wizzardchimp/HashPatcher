@@ -12,71 +12,76 @@
     #crackPanel .scanline { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: rgba(34,197,94,0.15); animation: scanline 2s linear infinite; pointer-events: none; }
   </style>
 </head>
-<body class="bg-zinc-950 text-zinc-200 min-h-screen flex items-center justify-center p-6">
-  <div id="app" class="w-full max-w-2xl transition-all duration-500 ease-in-out">
-    <h1 class="text-5xl font-bold tracking-tighter text-center mb-8">Hash Patcher</h1>
+<body class="bg-zinc-950 text-zinc-200 min-h-screen flex items-center justify-center p-2">
+  <div class="w-full max-w-6xl">
 
-    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-      <label class="block text-sm font-medium text-zinc-400 mb-2">Input</label>
-      <textarea id="input"
-                class="w-full h-40 bg-black border border-zinc-800 rounded-xl p-4 text-lg focus:outline-none focus:border-zinc-600 resize-y"
-                placeholder="Type or paste text here..."></textarea>
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl px-8 py-5 mb-3">
+      <h1 class="text-6xl font-bold tracking-tighter text-center">Hash Patcher</h1>
+    </div>
 
-      <div id="meter" class="mt-4 hidden">
-        <div class="flex justify-between items-baseline text-sm mb-1">
-          <span class="text-zinc-400">Password strength</span>
-          <span id="strengthLabel" class="font-medium text-zinc-300">—</span>
+    <div class="flex gap-3 items-start">
+      <div class="flex-1 bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
+        <label class="block text-sm font-medium text-zinc-400 mb-2">Input</label>
+        <textarea id="input"
+                  class="w-full h-48 bg-black border border-zinc-800 rounded-xl p-4 text-lg focus:outline-none focus:border-zinc-600 resize-y"
+                  placeholder="Type or paste text here..."></textarea>
+
+        <div id="meter" class="mt-4 hidden">
+          <div class="flex justify-between items-baseline text-sm mb-1">
+            <span class="text-zinc-400">Password strength</span>
+            <span id="strengthLabel" class="font-medium text-zinc-300">—</span>
+          </div>
+          <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
+            <div id="strengthBar" class="h-2 w-0 bg-red-500 transition-all"></div>
+          </div>
+          <div class="mt-3">
+            <div class="text-sm text-zinc-400">Time to crack (fast offline)</div>
+            <div id="crackTime" class="text-2xl font-semibold text-white">—</div>
+          </div>
         </div>
-        <div class="h-2 bg-zinc-800 rounded-full overflow-hidden">
-          <div id="strengthBar" class="h-2 w-0 bg-red-500 transition-all"></div>
-        </div>
-        <div class="mt-3">
-          <div class="text-sm text-zinc-400">Time to crack (fast offline)</div>
-          <div id="crackTime" class="text-2xl font-semibold text-white">—</div>
+
+        <div class="mt-6">
+          <label class="block text-sm font-medium text-zinc-400 mb-2">MD5</label>
+          <div id="output"
+               class="font-mono text-xl bg-black border border-zinc-800 rounded-xl p-4 min-h-[52px] break-all select-all">
+          </div>
+          <div class="flex gap-2 mt-3">
+            <button id="copyBtn"
+                    class="flex-1 py-3 rounded-xl bg-green-600 hover:bg-green-500 active:bg-green-700 text-white font-medium transition">
+              Copy
+            </button>
+            <button id="meterBtn"
+                    class="flex-1 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-zinc-300 font-medium transition">
+              Meter
+            </button>
+            <button id="crackBtn"
+                    class="flex-1 py-3 rounded-xl bg-red-700 hover:bg-red-600 active:bg-red-800 text-white font-medium transition">
+              Crack
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="mt-6">
-        <label class="block text-sm font-medium text-zinc-400 mb-2">MD5</label>
-        <div id="output"
-             class="font-mono text-xl bg-black border border-zinc-800 rounded-xl p-4 min-h-[52px] break-all select-all">
-        </div>
-        <div class="flex gap-2 mt-3">
-          <button id="copyBtn"
-                  class="flex-1 py-3 rounded-xl bg-green-600 hover:bg-green-500 active:bg-green-700 text-white font-medium transition">
-            Copy
-          </button>
-          <button id="meterBtn"
-                  class="flex-1 py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-600 text-zinc-300 font-medium transition">
-            Meter
-          </button>
-          <button id="crackBtn"
-                  class="flex-1 py-3 rounded-xl bg-red-700 hover:bg-red-600 active:bg-red-800 text-white font-medium transition">
-            Crack
-          </button>
+      <div id="crackPanel" class="w-0 opacity-0 transition-all duration-500 ease-in-out overflow-hidden flex-shrink-0">
+        <div class="w-[480px] h-[620px] bg-black border border-zinc-800 rounded-2xl flex flex-col overflow-hidden relative">
+          <div class="scanline"></div>
+          <div class="flex items-center justify-between px-4 py-2 bg-zinc-900 border-b border-zinc-800">
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 rounded-full bg-red-500"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500"></div>
+            </div>
+            <span id="panelTitle" class="text-xs text-zinc-500 font-mono">rainbow_table_lookup</span>
+            <span id="panelStatus" class="text-xs text-zinc-600 font-mono"></span>
+          </div>
+          <div id="terminal" class="flex-1 p-4 overflow-y-auto font-mono text-xs leading-relaxed">
+            <div class="text-zinc-600">Awaiting hash input...</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <p class="text-center text-zinc-500 text-xs mt-4">Live MD5 hash — updates as you type</p>
-  </div>
-
-  <div id="crackPanel" class="w-0 opacity-0 transition-all duration-500 ease-in-out overflow-hidden ml-0">
-    <div class="w-[420px] h-[540px] bg-black border border-zinc-800 rounded-2xl flex flex-col overflow-hidden relative">
-      <div class="scanline"></div>
-      <div class="flex items-center justify-between px-4 py-2 bg-zinc-900 border-b border-zinc-800">
-        <div class="flex items-center gap-2">
-          <div class="w-3 h-3 rounded-full bg-red-500"></div>
-          <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-          <div class="w-3 h-3 rounded-full bg-green-500"></div>
-        </div>
-        <span id="panelTitle" class="text-xs text-zinc-500 font-mono">rainbow_table_lookup</span>
-        <span id="panelStatus" class="text-xs text-zinc-600 font-mono"></span>
-      </div>
-      <div id="terminal" class="flex-1 p-4 overflow-y-auto font-mono text-xs leading-relaxed">
-        <div class="text-zinc-600">Awaiting hash input...</div>
-      </div>
-    </div>
+    <p class="text-center text-zinc-500 text-xs mt-3">Live MD5 hash — updates as you type</p>
   </div>
 
   <script>
@@ -301,7 +306,6 @@
     const strengthBar = document.getElementById('strengthBar');
     const strengthLabel = document.getElementById('strengthLabel');
     const crackTime = document.getElementById('crackTime');
-    const app = document.getElementById('app');
     const crackPanel = document.getElementById('crackPanel');
     const terminal = document.getElementById('terminal');
     const panelTitle = document.getElementById('panelTitle');
@@ -377,6 +381,7 @@
 
     let crackRunning = false;
     let crackAbort = false;
+    let crackOpen = false;
 
     function timestamp() {
       const d = new Date();
@@ -459,25 +464,23 @@
     }
 
     crackBtn.addEventListener('click', () => {
-      if (crackPanel.classList.contains('w-0') || crackPanel.style.opacity === '0') {
-        app.style.maxWidth = '30rem';
-        crackPanel.style.width = '450px';
+      if (!crackOpen) {
+        crackPanel.style.width = '480px';
         crackPanel.style.opacity = '1';
-        crackPanel.style.marginLeft = '1rem';
         crackBtn.textContent = 'Close';
         crackBtn.className = 'flex-1 py-3 rounded-xl bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-500 text-zinc-300 font-medium transition';
         panelTitle.textContent = 'rainbow_table_lookup';
         panelStatus.className = 'text-xs text-zinc-600 font-mono';
         panelStatus.textContent = '';
+        crackOpen = true;
         setTimeout(() => runCrack(), 500);
       } else {
         crackAbort = true;
         crackPanel.style.width = '0';
         crackPanel.style.opacity = '0';
-        crackPanel.style.marginLeft = '0';
-        app.style.maxWidth = '42rem';
         crackBtn.textContent = 'Crack';
         crackBtn.className = 'flex-1 py-3 rounded-xl bg-red-700 hover:bg-red-600 active:bg-red-800 text-white font-medium transition';
+        crackOpen = false;
       }
     });
 
